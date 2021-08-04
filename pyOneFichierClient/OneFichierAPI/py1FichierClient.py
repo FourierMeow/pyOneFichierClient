@@ -176,7 +176,7 @@ class FichierClient(object):
         o = self._APIcall('https://api.1fichier.com/v1/download/get_token.cgi', json = params)
         return o['url']
             
-    def upload_file(self, file_path):
+    def upload_file(self, file_path, params={}):
         o = self._APIcall('https://api.1fichier.com/v1/upload/get_upload_server.cgi', method = 'GET')
         up_srv = o['url']
         id = o['id']
@@ -185,9 +185,9 @@ class FichierClient(object):
         
         up_u = f'https://{up_srv}/upload.cgi?id={id}'
         if self.authed is True:
-            r = s.post(up_u, files = multiple_files, headers = self.auth_nc, allow_redirects = False)
+            r = s.post(up_u, files = multiple_files, headers = self.auth_nc, allow_redirects = False, data=params)
         else:
-            r = s.post(up_u, files = multiple_files, allow_redirects = False)
+            r = s.post(up_u, files = multiple_files, allow_redirects = False, data=params)
         if not 'Location' in r.headers:
             raise FichierResponseNotOk('Missing Locatiion header in response')
         loc = r.headers['Location']
